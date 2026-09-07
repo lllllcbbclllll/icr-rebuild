@@ -13,7 +13,7 @@ markdown = image_to_markdown("data/samples/eletronic_01.png")
 
 client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 r = client.models.generate_content(
-    model="gemini-3.6-flash",
+    model="gemini-3.5-flash",
     contents=markdown,
     config=types.GenerateContentConfig(
         system_instruction=prompt,
@@ -23,3 +23,6 @@ r = client.models.generate_content(
     ),
 )
 print(r.text)
+
+invoice = InvoiceData.model_validate_json(r.text)
+print(invoice.model_dump(by_alias=True))
