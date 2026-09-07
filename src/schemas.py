@@ -1,3 +1,8 @@
+# 設計決策：單一 model，validator 不進 JSON Schema。
+# 因此模型生成不受約束，validation failure 可作為品質訊號。
+# 若 v2 要加 Field(pattern=...) 提升成功率，需拆成
+# InvoiceRaw(寬鬆，給模型) / InvoiceData(嚴格，驗證) 以保留量測能力。
+
 import re
 from datetime import datetime
 from decimal import Decimal

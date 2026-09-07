@@ -5,3 +5,4 @@ __pycache__/
 .DS_Store
 data/samples/
 data/ground_truth/
+data/ocr_cache/
