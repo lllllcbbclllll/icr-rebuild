@@ -6,9 +6,9 @@
 import re
 from datetime import datetime
 from decimal import Decimal
+from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
-
 
 class InvoiceData(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
@@ -69,6 +69,12 @@ class InvoiceData(BaseModel):
             return None
         return v
 
+class ExtractionResult(BaseModel):
+    status: Literal["ok", "failed"]
+    data: InvoiceData | None = None
+    ocr_ms: float | None = None
+    llm_ms: float | None = None
+    fields_total: int = len(InvoiceData.model_fields)
 
 if __name__ == "__main__":
     # 模擬 Mistral structured output 會吐出來的 dict(中文 key)

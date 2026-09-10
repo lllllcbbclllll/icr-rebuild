@@ -32,6 +32,14 @@ v1 範圍：單張圖片 → OCR → LLM 抽取 → Pydantic 驗證 → JSON。
   3. JSON 合法但 Pydantic 擋下（格式錯誤）
   4. 驗證通過但全為 None（抽取失敗，會靜默通過，需另外判斷）
 
+### 模型版本控制
+- promptfoo 的 providers 設定同樣須釘死版本，不可用 -latest 別名。
+- 每次評估結果需連同 model ID 一起記錄，否則跨時間的數據無法比較。
+- 已觀察到的版本差異：同一份 OCR 輸入與 prompt 下，
+  gemini-3.6-flash 的「賣方名稱」為空，gemini-3.5-flash 抽到
+  「燦坤實業股份有限公司」。單一欄位的 recall 因模型版本而異。
+  → 這類差異若無 per-field 比對會完全看不到，是評估層存在的直接理由。
+
 ---
 
 ## 二、對比實驗
