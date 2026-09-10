@@ -8,9 +8,8 @@ from src.schemas import InvoiceData
 
 load_dotenv()
 
-def extract_invoice(markdown: str) -> InvoiceData:
+def extract_invoice(markdown: str) -> str:
     prompt = (Path(__file__).parent.parent / "prompts" / "invoice_v1.md").read_text()
-    markdown = image_to_markdown("data/samples/eletronic_01.png")
 
     client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
     r = client.models.generate_content(
@@ -23,10 +22,13 @@ def extract_invoice(markdown: str) -> InvoiceData:
             response_schema=InvoiceData,
         ),
     )
-    return InvoiceData.model_validate_json(r.text)
+
+    if r.text is None:
+        raise ValueError("模型回傳空內容")
+
+    return r.text
 
 
 if __name__ == "__main__":
     markdown = image_to_markdown("data/samples/eletronic_01.png")
-    result = extract_invoice(markdown)
-    print(result.model_dump(by_alias=True))
+    print(extract_invoice(markdown))

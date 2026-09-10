@@ -1,6 +1,7 @@
 from src.ocr import image_to_markdown
 from src.extract import extract_invoice
-from src.schemas import ExtractionResult
+from pydantic import ValidationError
+from src.schemas import InvoiceData, ExtractionResult
 import time
 
 def process_invoice(image_path: str):
@@ -9,12 +10,25 @@ def process_invoice(image_path: str):
     ocr_ms = (time.perf_counter() - t0) * 1000
 
     t1 = time.perf_counter()
-    invoice = extract_invoice(markdown)
+    raw = extract_invoice(markdown)
     llm_ms = (time.perf_counter() - t1) * 1000
 
+    try:
+        invoice = InvoiceData.model_validate_json(raw)
+    except ValidationError as e:
+        return ExtractionResult(
+            status="failed",
+            error_type="validation_failed",
+            error_detail=e.errors(),
+            raw_output=raw,
+            ocr_ms=ocr_ms,
+            llm_ms=llm_ms,
+        )
+    
     return ExtractionResult(
         status="ok",
         data=invoice,
+        raw_output=raw,
         ocr_ms=ocr_ms,
         llm_ms=llm_ms,
     )
