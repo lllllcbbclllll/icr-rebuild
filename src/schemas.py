@@ -64,7 +64,7 @@ class InvoiceData(BaseModel):
 
     @field_validator("total_amount", mode="before")
     @classmethod
-    def blank_amount_to_none(cls, v):
+    def blank_amount_to_none(cls, v: str | Decimal | None) -> str | Decimal | None:
         if v is None or (isinstance(v, str) and v.strip() == ""):
             return None
         return v
