@@ -75,8 +75,8 @@ class ExtractionResult(BaseModel):
     ocr_ms: float | None = None
     llm_ms: float | None = None
     fields_total: int = len(InvoiceData.model_fields)
-    error_type: Literal["ocr_failed", "api_rate_limited", "api_unavailable", "api_invalid_request", "validation_failed"] | None = None
-    error_detail: list | None = None
+    error_type: Literal["ocr_failed", "api_rate_limited", "api_unavailable", "api_invalid_request", "empty_response", "validation_failed"] | None = None
+    error_detail: str | None = None
     raw_output: str | None = None
 
 if __name__ == "__main__":
